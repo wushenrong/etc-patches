@@ -1,0 +1,13 @@
+--- /etc/locale.gen	2025-04-27 09:33:36.000000000 -0400
++++ locale.gen	2025-06-17 12:26:45.432477135 -040
+@@ -168,8 +168,8 @@
+ #en_SC.UTF-8 UTF-8  
+ #en_SG.UTF-8 UTF-8  
+ #en_SG ISO-8859-1  
+-#en_US.UTF-8 UTF-8  
+-#en_US ISO-8859-1  
++en_US.UTF-8 UTF-8
++en_US ISO-8859-1  
+ #en_ZA.UTF-8 UTF-8  
+ #en_ZA ISO-8859-1  
+ #en_ZM UTF-8  

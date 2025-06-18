@@ -1,0 +1,40 @@
+--- /etc/nanorc	2025-06-12 07:50:22.000000000 -0400
++++ nanorc	2025-06-17 10:38:01.736388394 -0400
+@@ -232,24 +232,25 @@
+ # set functioncolor green
+ 
+ ## In root's .nanorc you might want to use:
+-# set titlecolor bold,white,magenta
+-# set promptcolor black,yellow
+-# set statuscolor bold,white,magenta
+-# set errorcolor bold,white,red
+-# set spotlightcolor black,orange
+-# set selectedcolor lightwhite,cyan
+-# set stripecolor ,yellow
+-# set scrollercolor magenta
+-# set numbercolor magenta
+-# set keycolor lightmagenta
+-# set functioncolor magenta
++set titlecolor bold,white,magenta
++set promptcolor black,yellow
++set statuscolor bold,white,magenta
++set errorcolor bold,white,red
++set spotlightcolor black,orange
++set selectedcolor lightwhite,cyan
++set stripecolor ,yellow
++set scrollercolor magenta
++set numbercolor magenta
++set keycolor lightmagenta
++set functioncolor magenta
+ 
+ 
+ ## === Syntax coloring ===
+ ## For all details, see 'man nanorc', section SYNTAX HIGHLIGHTING.
+ 
+ ## To include most of the existing syntax definitions, you can do:
+-# include /usr/share/nano/*.nanorc
++include /usr/share/nano/*.nanorc
++include /usr/share/nano/extra/*.nanorc
+ 
+ ## Or you can select just the ones you need.  For example:
+ # include /usr/share/nano/html.nanorc

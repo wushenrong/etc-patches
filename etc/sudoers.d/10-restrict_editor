@@ -1,0 +1,2 @@
+# Set default EDITOR to restricted version of nano, and do not allow visudo to use EDITOR/VISUAL.
+Defaults editor=/usr/bin/rnano, !env_editor
