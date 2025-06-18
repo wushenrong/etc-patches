@@ -1,0 +1,6 @@
+# SPDX-FileCopyrightText: 2025 Samuel Wu
+#
+# SPDX-License-Identifier: 0BSD
+
+# Allow members of group wheel to execute any command
+%wheel ALL=(ALL:ALL) ALL
