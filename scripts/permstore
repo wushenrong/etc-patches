@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# SPDX-FileCopyrightText: 2025 Samuel Wu
+#
+# SPDX-License-Identifier: 0BSD
+
+perm_store="store.csv"
+
+command="$1"
+path="$2"
+
+usage() {
+	cat <<EOF
+A poor man's permission store script for git.
+
+Usage:
+	$(basename "$0") [OPTIONS] store <path>
+	$(basename "$0") [OPTIONS] retrieve [<path>]
+
+Commands:
+	store		Save file or directory permissions.
+	retrieve	Apply permissions to file or directory.
+
+Arguments:
+	<path>	A regular file or directory.
+
+Options:
+	-s <file>	The file where permissions are stored [default: $perm_store]
+	-h			Show this screen.
+	-v			Print version and license information.
+EOF
+}
+
+version() {
+	cat <<EOF
+$(basename "$0") 1.0
+A poor man's permission store script for git.
+
+Copyright (C) 2025 by Samuel Wu
+
+Permission to use, copy, modify, and/or distribute this software for any purpose
+with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
+FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+EOF
+}
+
+error() {
+	printf >&2 "%s: %s\n" "$(basename "$0")" "$1"
+	exit "$2"
+}
+
+while getopts ":s:hv-" opts; do
+	case $opts in
+	s)
+		perm_store="$OPTARG"
+		;;
+	h)
+		usage
+		exit
+		;;
+	v)
+		version
+		exit
+		;;
+	-)
+		break
+		;;
+	:)
+		error "Option -$OPTARG requires an argument" 1
+		;;
+	*)
+		error "Unknown option -$OPTARG" 1
+		;;
+	esac
+done
+
+shift "$((OPTIND - 1))"
+
+case $command in
+store)
+	if [[ ! -f $perm_store ]]; then
+		touch "$perm_store"
+	fi
+
+	if [[ -z $path ]]; then
+		error "Missing argument <path>" 1
+	fi
+
+	if [[ ! -f $path && ! -d $path ]]; then
+		error "$path is not a regular file or directory" 2
+	fi
+
+	perms="$(stat -c '%0.4a' "$path")"
+	escaped_path=$(printf '%s\n' "$path" | sed 's/[&/\]/\\&/g')
+
+	sed -i "/$escaped_path,/d" "$perm_store"
+	printf "%s,%s\n" "$path" "$perms" >>"$perm_store"
+
+	sort -o "$perm_store" "$perm_store"
+
+	printf "Stored permissions of '%s' to '%s'.\n" "$path" "$perm_store"
+	;;
+retrieve)
+	if [[ ! -f $perm_store ]]; then
+		error "'$perm_store' does not exist" 2
+	fi
+
+	found=false
+
+	while IFS=, read -r current_path perms; do
+		if [[ -z $path || "$current_path" == "$path" ]]; then
+			found=true
+
+			if chmod -c "$perms" "$current_path"; then
+				printf "Successfully applied permissions %0.4o to '%s'.\n" "$perms" "$current_path"
+			else
+				error "Unable to apply permissions to '$current_path'." 1
+			fi
+		fi
+	done <"$perm_store"
+
+	if ! $found; then
+		error "'$path' does not exist" 2
+	fi
+	;;
+"")
+	usage
+	exit 1
+	;;
+*)
+	error "Unknown command '$command'" 1
+	;;
+esac
