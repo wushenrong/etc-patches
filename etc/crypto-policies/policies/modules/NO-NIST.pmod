@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: 0BSD
 
 # Disable groups and elipical curves created by NIST
-group = -P*-MLKEM* -SECP*
+group@SSH = -P*-MLKEM* -SECP*
 
 # Disable signature algorithms created by NIST
-sign = -ECDSA-*
+sign@SSH = -ECDSA-*
