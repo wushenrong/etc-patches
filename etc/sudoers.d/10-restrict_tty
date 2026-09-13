@@ -1,0 +1,9 @@
+# SPDX-FileCopyrightText: 2025 Samuel Wu
+#
+# SPDX-License-Identifier: 0BSD
+
+# From https://wiki.archlinux.org/title/Sudo#Running_a_command_via_SSH
+# Disable "ssh hostname sudo <cmd>", because it will show the password in clear text. You have to run "ssh -t hostname sudo <cmd>".
+#
+Defaults    requiretty
+Defaults    cmddenial_message="Usage without a TTY is not allowed: run 'ssh -t'!"
